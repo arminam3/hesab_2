@@ -2,7 +2,7 @@ from django.shortcuts import render, reverse ,get_object_or_404
 from django.views import generic
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
-
+from django.urls import reverse_lazy
 from .forms import CreateMoneyForm, CreateShoppingForm
 from .models import Week, Shopping, Money, Hesab, MainHesab, LastHesab
 
@@ -260,8 +260,12 @@ def last_hesab_refresh(request, pk):
     return render(request, 'hesab/all_hesab.html', {'hesabs': last_hesabs})
 
 
-
-
+class CreateWeek(generic.CreateView):
+    model = Week
+    template_name = 'hesab/create_money.html'
+    fields = ['name']
+    def get_success_url(self):
+        return reverse('week_details', args=[self.object.pk])
 
 
 
