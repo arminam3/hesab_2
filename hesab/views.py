@@ -280,7 +280,10 @@ class CreateWeek(generic.CreateView):
     #             money_n.money +=p_mon
     #             money_n._do_update(money=money_n.money)
 
-
+class DeleteWeek(generic.DeleteView):
+    model = Week
+    template_name = 'hesab/delete_week.html'
+    success_url = reverse_lazy('week_list')
 
 
 
