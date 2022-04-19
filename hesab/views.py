@@ -45,7 +45,7 @@ def refresh(request, pk):
 
 def week_details(request, pk):
     week = Week.objects.get(id=pk)
-    all_money = Money.objects.filter(week=week).order_by('money')
+    all_money = Money.objects.filter(week=week).order_by('-money')
     shopping = Shopping.objects.filter(week=week).order_by('name')
 
     week_money = 0
