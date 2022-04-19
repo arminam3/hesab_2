@@ -12,33 +12,42 @@
     <div class="container mt-4">
         <div class="row">
             <div class="col-md-5"></div>
-            <div class="col-md-4">
-                <a class="btn btn-warning" type="submit" href="{% url 'refresh' week.id %}" style="margin: 1px">@
+            <div class="row">
+                <div class="col-md-4"></div>
+                <a class="btn btn-warning col-md-4" type="submit" href="{% url 'refresh' week.id %}" style="margin: 1px">@
                     Refresh</a>
+                <div class="col-md-4"></div>
             </div>
             <div class="col-md-5"></div>
-            <div class="col-md-4">
-                <a class="btn btn-success" type="submit" href="{% url 'create_money' week.id %}" style="margin: 1px">اضافه
+            <div class="row">
+                <div class="col-md-4"></div>
+                <a class="btn btn-success col-md-4" type="submit" href="{% url 'create_money' week.id %}" style="margin: 1px">اضافه
                     کردن فرد</a>
-
+                <div class="col-md-4"></div>
             </div>
             <div class="col-md-5"></div>
-            <div class="col-md-4">
-                <a class="btn btn-danger" type="submit" href="{% url 'delete_week' week.id %}" style="margin: 1px">حذف هفته</a>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <a class="btn btn-danger col-md-4" type="submit" href="{% url 'delete_week' week.id %}" style="margin: 1px">حذف هفته</a>
+                <div class="col-md-4"></div>
 
             </div>
-            <div class="col-md-5"></div>
-            <div class="col-md-4">
-                <a class="btn btn-success" type="submit" href="{% url 'create_shopping' week.id %}" style="margin: 1px">اضافه
+            <div class="row"></div>
+             <div class="col-md-4"></div>
+
+            <div class="row">
+                <div class="col-md-4"></div>
+                <a class="btn btn-success col-md-4" type="submit" href="{% url 'create_shopping' week.id %}" style="margin: 1px">اضافه
                     کردن خرید</a>
+                <div class="col-md-4"></div>
             </div>
-            <div class="col-md-3>
+            <div class="col-md-3">
         </div>
-        <div class="col-md-4">
-            <a class="btn btn-success" type="submit" href="{% url 'hesab' week.id %}" style="margin: 1px"> حساب ها </a>
-        </div><div class="col-md-4">
-            <a class="btn btn-success" type="submit" href="{% url 'last_hesab_refresh' week.id %}" style="margin: 1px"> جزئیات </a>
-        </div>
+{#        <div class="col-md-4">#}
+{#            <a class="btn btn-success" type="submit" href="{% url 'hesab' week.id %}" style="margin: 1px"> حساب ها </a>#}
+{#        </div><div class="col-md-4">#}
+{#            <a class="btn btn-success" type="submit" href="{% url 'last_hesab_refresh' week.id %}" style="margin: 1px"> جزئیات </a>#}
+{#        </div>#}
         <div class="col-md-3"></div>
 
         <div class="col-9">
