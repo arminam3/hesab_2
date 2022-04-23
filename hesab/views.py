@@ -16,7 +16,7 @@ class WeekList(generic.ListView):
 
 def refresh(request, pk):
     week = Week.objects.get(id=pk)
-    all_money = Money.objects.filter(week=week).order_by('money')
+    all_money = Money.objects.filter(week=week).order_by('-money')
     shopping = Shopping.objects.filter(week=week).order_by('name')
     moneys = Money.objects.filter(week=week)
     chosen_shopping = Shopping.objects.filter(week=week)
@@ -106,7 +106,7 @@ def shopping_create_view(request, pk):
                 my_money -= int(shop.amount / numbers)
                 Money.objects.filter(user=money.user, week=week).update(money=my_money)
             Week.objects.filter(id=pk).update(sum=week_sum)
-            return HttpResponseRedirect(f'/{pk}/weekdetails/')
+            return HttpResponseRedirect(f'/{pk}/createshopping/')
         else:
             return HttpResponse('حداقل یک مورد را برای مصرف کنندگان انتخاب کنید !')
 
@@ -230,13 +230,31 @@ def hesab(request, pk):
         except:
             hesab_2 = MainHesab.objects.create(week=week, plus=hesab.plus, negative=hesab.negative,amount=money)
 
-    hesabs_3 = MainHesab.objects.filter(week=pk)
-    return render(request, 'hesab/all_hesab.html', {'hesabs': hesabs_3})
+    chosen_main_hesab = MainHesab.objects.filter(week=week)
+    for main_hesab in chosen_main_hesab:
+        main_hesab_p = MainHesab.objects.filter(week_id=pk, plus=main_hesab.plus,  negative=main_hesab.negative)
+        for p in main_hesab_p:
+            try:
+                last = LastHesab.objects.get(week_id=pk, plus=main_hesab.plus,  negative=main_hesab.negative)
+                last.money += p.amount
+            except:
+                last = LastHesab.objects.create(week_id=pk, plus=main_hesab.plus,  negative=main_hesab.negative, amount=p.amount)
+        main_hesab_n = MainHesab.objects.filter(week_id=pk, plus=main_hesab.negative,  negative=main_hesab.plus)
+        for n in main_hesab_n:
+            try:
+                last = LastHesab.objects.get(week_id=pk, plus=main_hesab.plus, negative=main_hesab.negative)
+                last.money -= p.amount
+            except:
+                last = LastHesab.objects.create(week_id=pk, plus=main_hesab.plus, negative=main_hesab.negative,
+                                             amount=-1*(p.amount))
+
+    last_hesab = LastHesab.objects.filter(week=week)
+    return render(request, 'hesab/all_hesab.html', {'hesabs': last_hesab})
 
 def last_hesab_refresh(request, pk):
     week = Week.objects.get(id=pk)
     shopping = Shopping.objects.filter(week=week).order_by('name')
-    main_heasbs = MainHesab.objects.filter(week=week).order_by('amount')      #important
+    main_heasbs = MainHesab.objects.filter(week=week).order_mby('amount')      #important
     LastHesab.objects.filter(week=week).delete()
     for main_hesab in main_heasbs:
         try:
@@ -267,23 +285,18 @@ class CreateWeek(generic.CreateView):
     def get_success_url(self):
         return reverse('week_details', args=[self.object.pk])
 
-
-
-    # for money_p in chosen_money_plus:
-    #     p_mon = money_p.money
-    #     for money_n in chosen_money_negative:
-    #         if p_mon != 0 and p_mon >= -1*(money_n.money):
-    #             Hesab.objects.create(plus=money_p.user, negative=money_n.user, amount=int(money_n.money))
-    #             p_mon +=money_n.money
-    #         elif p_mon != 0 and p_mon < -1*(money_n.money):
-    #             Hesab.objects.create(plus=money_p.user, negative=money_n.user, amount=int(money_n.money))
-    #             money_n.money +=p_mon
-    #             money_n._do_update(money=money_n.money)
-
 class DeleteWeek(generic.DeleteView):
     model = Week
     template_name = 'hesab/delete_week.html'
     success_url = reverse_lazy('week_list')
+
+# def hesab(request, pk):
+#     money_plus = Money.objects.filter(week_id=pk, money__gte=1).order_by('money')
+#     money_negative = Money.objects.filter(week_id=pk, money__lte=-1 ).order_by('money')
+#     for n in money_negative:
+#         n_money=n.money
+#         shou
+#         while n_money <0:
 
 
 

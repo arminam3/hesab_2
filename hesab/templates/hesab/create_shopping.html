@@ -16,6 +16,9 @@
             <button type="submit" class="btn btn-success">
                 ذخیره
             </button>
+            <button href="{% url 'create_shopping' week.id %}" class="btn btn-info">
+            ذخیره و ایجاد دیگری
+            </button>
         </form>
         <a href="{% url 'week_details' week.id %}" class="btn btn-warning">
             بازگشت
