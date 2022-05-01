@@ -101,6 +101,9 @@
                                 {{ mon.money }}
                             {% endif %}
                         </td>
+                    <td>
+                        <a href="{% url 'delete_money' mon.id %}" class="btn btn-danger">Delete</a>
+                    </td>
 
 
                     </tr>

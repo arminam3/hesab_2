@@ -298,10 +298,15 @@ class DeleteWeek(generic.DeleteView):
 #         shou
 #         while n_money <0:
 
+# def give_to_get(request, pk):
 
 
 
-
+class DeleteMoney(generic.DeleteView):
+    model = Money
+    template_name = 'hesab/delete_week.html'
+    def get_success_url(self):
+        return f'/{self.object.week.id}/weekdetails/'
 
 
 
