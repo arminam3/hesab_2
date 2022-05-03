@@ -14,8 +14,8 @@ from .models import Week, Shopping, Money
 
 class CreateMoneyForm(forms.ModelForm):
     class Meta:
-        model = Money
-        fields = ['user']
+        model = Shopping
+        fields = ['consumer']
 
 class CreateShoppingForm(forms.ModelForm):
     class Meta:

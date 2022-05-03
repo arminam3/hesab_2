@@ -66,8 +66,9 @@ def money_create_view(request, pk):
     if request.method == 'POST':
         money_form = CreateMoneyForm(request.POST)
         if money_form.is_valid():
-            money = Money(user=money_form.cleaned_data['user'], week=week)
-            money.save()
+            for n in money_form.cleaned_data['consumer']:
+                money = Money(user=n, week=week)
+                money.save()
             return HttpResponseRedirect(f'/{pk}/refresh/')
 
     else:
@@ -159,43 +160,6 @@ def hesab_view(request, pk):
     hesabs = Hesab.objects.filter(week_id=pk)
     return render(request, 'hesab/all_hesab.html', {'hesabs': hesabs})
 
-#
-def hesab_view3(request, pk):
-    week = Week.objects.get(id=pk)
-    hesab = Hesab.objects.filter(week_id=pk)
-    for hes in hesab:
-        hes.delete()
-    moneys = Money.objects.filter(week_id=pk)
-    money_dict_p = {}
-    money_dict_n = {}
-    for money in moneys:
-        if money.money > 0:
-            money_dict_p.update({money.id: money.money})
-        elif money.money < 0:
-            money_dict_n.update({money.id: money.money})
-    key_n_list = []
-    key_p_list = []
-    for key, zero in money_dict_p.items():
-        if zero == 0:
-            list.append(key)
-    print(list)
-    for key_n, negative in money_dict_n.items():
-        for key_p, positive in money_dict_p.items():
-            if negative < positive:
-                positive += negative
-                print(key_n)
-                print(money_dict_p)
-                print(money_dict_n)
-                money_dict_n.pop(key_n)
-                break
-            elif negative > positive:
-                negative += positive
-                money_dict_p.pop(key_p)
-                break
-            elif negative == positive:
-                money_dict_p.pop(key_p)
-                money_dict_n.pop(key_n)
-                break
 
 
 def hesab(request, pk):

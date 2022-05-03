@@ -23,13 +23,13 @@ class Shopping(models.Model):
                ('6', 'جمعه')
                )
 
-    name = models.CharField(choices=CHOICES, max_length=100)
+    name = models.CharField(choices=CHOICES, max_length=100, default=0)
     week = models.ForeignKey(Week, on_delete=models.CASCADE, related_name='weekshopping', null=True)
     day = models.DateField(auto_now_add=True)
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='usershopping')
-    consumer = models.ManyToManyField(User)
+    consumer = models.ManyToManyField(User,default=(1,2,3,4,5,6,7,8))
     amount = models.IntegerField()
-    goods = models.CharField(max_length=500)
+    goods = models.CharField(max_length=500,default='غذا')
 
     def __str__(self):
         return f'{self.day} | {self.buyer}'
