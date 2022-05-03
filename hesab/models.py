@@ -9,6 +9,7 @@ class Week(models.Model):
     date_create = models.DateField(auto_now_add=True)
     sum = models.IntegerField(default=0)
     status = models.CharField(choices=STATUS, max_length=100, default='no')
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
