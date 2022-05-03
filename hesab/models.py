@@ -27,7 +27,7 @@ class Shopping(models.Model):
     week = models.ForeignKey(Week, on_delete=models.CASCADE, related_name='weekshopping', null=True)
     day = models.DateField(auto_now_add=True)
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='usershopping')
-    consumer = models.ManyToManyField(User)
+    consumer = models.ManyToManyField(User,default=(1,2,3,4,5,6,7,8))
     amount = models.IntegerField()
     goods = models.CharField(max_length=500,default='غذا')
 
