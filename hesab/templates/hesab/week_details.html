@@ -14,103 +14,119 @@
             <div class="col-md-5"></div>
             <div class="row">
                 <div class="col-md-4"></div>
-                <a class="btn btn-warning col-md-4" type="submit" href="{% url 'refresh' week.id %}" style="margin: 1px">@
+                <a class="btn btn-warning col-md-4" type="submit" href="{% url 'refresh' week.id %}"
+                   style="margin: 1px">@
                     Refresh</a>
                 <div class="col-md-4"></div>
             </div>
             <div class="col-md-5"></div>
             <div class="row">
                 <div class="col-md-4"></div>
-                <a class="btn btn-success col-md-4" type="submit" href="{% url 'create_money' week.id %}" style="margin: 1px">اضافه
+                <a class="btn btn-success col-md-4" type="submit" href="{% url 'create_money' week.id %}"
+                   style="margin: 1px">اضافه
                     کردن فرد</a>
                 <div class="col-md-4"></div>
             </div>
             <div class="col-md-5"></div>
             <div class="row">
                 <div class="col-md-4"></div>
-                <a class="btn btn-danger col-md-4" type="submit" href="{% url 'delete_week' week.id %}" style="margin: 1px">حذف هفته</a>
+                <a class="btn btn-danger col-md-4" type="submit" href="{% url 'delete_week' week.id %}"
+                   style="margin: 1px">حذف هفته</a>
                 <div class="col-md-4"></div>
 
             </div>
             <div class="row"></div>
-             <div class="col-md-4"></div>
+            <div class="col-md-4"></div>
 
             <div class="row">
                 <div class="col-md-4"></div>
-                <a class="btn btn-success col-md-4" type="submit" href="{% url 'create_shopping' week.id %}" style="margin: 1px">اضافه
+                <a class="btn btn-success col-md-4" type="submit" href="{% url 'create_shopping' week.id %}"
+                   style="margin: 1px">اضافه
                     کردن خرید</a>
                 <div class="col-md-4"></div>
             </div>
-            <div class="col-md-3>
-        </div>
-        <div class="col-md-4">
-            <a class="btn btn-success" type="submit" href="{% url 'hesab' week.id %}" style="margin: 1px"> حساب ها </a>
-        </div><div class="col-md-4">
-            <a class="btn btn-success" type="submit" href="{% url 'last_hesab_refresh' week.id %}" style="margin: 1px"> جزئیات </a>
-        </div>
-        <div class="col-md-3"></div>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <a class="btn btn-info col-md-4" type="submit" href="{% url 'last_hesab_refresh' week.id %}"
+                   style="margin: 1px">جزئیات
+                </a>
+                <div class="col-md-4"></div>
+            </div>
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-4">
+            </div>
+            <div class=" row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-3"></div>
 
-        <div class="col-9">
+                <div class="col-9">
 
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th scope="col"> روز</th>
-                    <th scope="col">خریدار</th>
-                    <th scope="col">مبلغ</th>
-                    <th scope="col">افراد</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    {% for day in shopping %}
-                        <th scope="row">{{ day.get_name_display }}</th>
-                        <td>{{ day.buyer }}</td>
-                        <td>{{ day.amount }}</td>
-
-
-                        <td>
-                            {% for con in day.consumer.all %}
-                                <span style="color:red"> | </span> {{ con.username }}
-                            {% endfor %}
-                        </td>
-
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col"> روز</th>
+                            <th scope="col">خریدار</th>
+                            <th scope="col">مبلغ</th>
+                            <th scope="col">افراد</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="col-3">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">نام</th>
-                    <th scope="col">اعتبار</th>
-                    {#                        <th scope="col">Last</th>#}
-                    {#                        <th scope="col">Handle</th>#}
-                </tr>
-                </thead>
-                <tbody>
-                {% for mon in all_money %}
-                    <tr>
-                        <th scope="row">{{ mon.user }}</th>
-                        <td>
-                            {% if mon.money == 0 %}
-                                0
-                            {% else %}
-                                {{ mon.money }}
-                            {% endif %}
-                        </td>
-                    <td>
-                        <a href="{% url 'delete_money' mon.id %}" class="btn btn-danger">Delete</a>
-                    </td>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            {% for day in shopping %}
+                                    <th scope="row">
+                                <a href="{% url 'delete_shopping' day.id %}" style="text-decoration: none">
+                                        {{ day.get_name_display }}
+                                </a>
+                                    </th>
+                                    <td>{{ day.buyer }}</td>
+                                    <td>{{ day.amount }}</td>
 
 
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+                                    <td>
+                                        {% for con in day.consumer.all %}
+                                            <span style="color:red"> | </span> {{ con.username }}
+                                        {% endfor %}
+                                    </td>
+{#                                </a>#}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-3">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">نام</th>
+                            <th scope="col">اعتبار</th>
+                            {#                        <th scope="col">Last</th>#}
+                            {#                        <th scope="col">Handle</th>#}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for mon in all_money %}
+                            <tr>
+                                <th scope="row">{{ mon.user }}</th>
+                                <td>
+                                    {% if mon.money == 0 %}
+                                        0
+                                    {% else %}
+                                        {{ mon.money }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'delete_money' mon.id %}" class="btn btn-danger">Delete</a>
+                                </td>
+
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
 {% endblock content %}

@@ -1,0 +1,47 @@
+{% extends '_base.html' %}
+
+{% block title %}
+    Delete Shopping
+{% endblock title %}
+
+{% block extra %}
+    <span> حذف {{ shopping }}</span>
+{% endblock extra %}
+
+{% block content %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col"> روز</th>
+            <th scope="col">خریدار</th>
+            <th scope="col">مبلغ</th>
+            <th scope="col">افراد</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">
+                {{ shopping.get_name_display }}
+            </th>
+            <td>{{ shopping.buyer }}</td>
+            <td>{{ shopping.amount }}</td>
+
+
+            <td>
+                {% for con in shopping.consumer.all %}
+                    <span style="color:red"> | </span> {{ con.username }}
+                {% endfor %}
+            </td>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <p>{{ form.as_table }}</p>
+                <td>
+                    <button type="submit" class="btn btn-danger">
+                        Delete
+                    </button>
+                </td>
+            </form>
+        </tr>
+
+
+{% endblock content %}

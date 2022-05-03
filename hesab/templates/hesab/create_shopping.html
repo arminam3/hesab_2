@@ -13,7 +13,7 @@
         <form action="" method="POST">
             {% csrf_token %}
             <table>{{ form.as_table }}</table>
-            <button type="submit" class="btn btn-success">
+            <button  href="{% url 'week_details' week.id %}" type="submit" class="btn btn-success">
                 ذخیره
             </button>
             <button href="{% url 'create_shopping' week.id %}" class="btn btn-info">

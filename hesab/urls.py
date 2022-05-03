@@ -8,7 +8,9 @@ urlpatterns=[
     path('<int:pk>/refresh/', views.refresh, name='refresh'),
     path('<int:pk>/createmoney/', views.money_create_view, name='create_money'),
     path('<int:pk>/createshopping/', views.shopping_create_view, name='create_shopping'),
+    path('<int:pk>/createshopping/', views.shopping_create_view, name='create_shopping'),
     path('<int:pk>/hesab/', views.hesab, name='hesab'),
     path('<int:pk>/deletemoney/', views.DeleteMoney.as_view(), name='delete_money'),
+    path('<int:pk>/deleteshopping/', views.DeleteShopping.as_view(), name='delete_shopping'),
     path('<int:pk>/lasthesabrefresh/', views.correct_hesab, name='last_hesab_refresh'),
 ]

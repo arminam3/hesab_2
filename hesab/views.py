@@ -49,9 +49,6 @@ def week_details(request, pk):
     shopping = Shopping.objects.filter(week=week).order_by('name')
 
     week_money = 0
-    # for shop in shopping:
-    #     week_money +=shop.amount
-    # Week.objects.filter(id=pk).update(sum=week_money)
     context = {
         'week': week,
         'sum': week.sum,
@@ -84,27 +81,33 @@ def shopping_create_view(request, pk):
     if request.method == 'POST':
         shop_form = CreateShoppingForm(request.POST)
         if shop_form.is_valid():
-            shop = Shopping(
+            shop = Shopping.objects.create(
                              week=week,
                              name=shop_form.cleaned_data['name'],
                              goods=shop_form.cleaned_data['goods'],
                              buyer=shop_form.cleaned_data['buyer'],
                              amount=shop_form.cleaned_data['amount'],
                              )
-            shop.save()
-            for n in shop_form.cleaned_data['consumer']:
-                shop.consumer.add(n)
+            # shop.save()
+            if shop_form.cleaned_data['consumer']:
+                for n in shop_form.cleaned_data['consumer']:
+                    shop.consumer.add(n)
+            else:
+                shop.delete()
+                return HttpResponse('حداقل یک مصرف کننده تعریف کنید')
             numbers = shop.consumer.all().count()
             week_sum += shop.amount
             for con in shop.consumer.all():
                 try:
                     money = Money.objects.get(week=week, user=con)
-
+                    my_money = money.money
+                    my_money -= int(shop.amount / numbers)
                 except:
-                    shop.delete()
-                    return HttpResponse('چنین مصرف کننده ای برای این هفته تعریف نشده است')
-                my_money = money.money
-                my_money -= int(shop.amount / numbers)
+                    money = Money.objects.create(week=week, user=con, money=0)
+                    my_money = money.money
+                    my_money -= int(shop.amount / numbers)
+                if con.id == shop.buyer.id:
+                    my_money += shop.amount
                 Money.objects.filter(user=money.user, week=week).update(money=my_money)
             Week.objects.filter(id=pk).update(sum=week_sum)
             return HttpResponseRedirect(f'/{pk}/createshopping/')
@@ -119,46 +122,6 @@ def shopping_create_view(request, pk):
         }
         return render(request, 'hesab/create_shopping.html',context )
 
-def hesab_view(request, pk):
-    week = Week.objects.get(id=pk)
-    hesab = Hesab.objects.filter(week_id=pk)
-    for hes in hesab :
-        hes.delete()
-    chosen_money_negative = Money.objects.filter(week_id=pk, money__lte=-1)
-    for n in chosen_money_negative:
-        chosen_money_plus = Money.objects.filter(week_id=pk, money__gte=1)
-        while n.money < 0:
-            print('---------------')
-            print(chosen_money_negative)
-            print(n.money)
-            print(chosen_money_plus)
-            for p in chosen_money_plus:
-                print('=============')
-                p_user = p.user
-                n_user = n.user
-                x = p.money
-                y = n.money
-                if x >= -1*y:
-                    x += y
-                    n = Money.objects.get(id=n.id)
-                    n.money = 0
-                    p=Money.objects.get(id=p.id)
-                    p.money = x
-                    p.save()
-                elif x < -1*y:
-                    y += x
-                    nn=Money.objects.get(id=n.id)
-                    print('first :',nn.money)
-                    nn.money = y
-                    nn.save()
-                    print('second :',nn.money)
-
-                    pp = Money.objects.get(id=p.id)
-                    pp.money = 0
-                    pp.save()
-                    # Hesab.objects.create(plus=p_user,negative=n_user,amount=x)
-    hesabs = Hesab.objects.filter(week_id=pk)
-    return render(request, 'hesab/all_hesab.html', {'hesabs': hesabs})
 
 
 
@@ -177,17 +140,14 @@ def hesab(request, pk):
         chosen_hesab = Hesab.objects.filter(week=week, plus=hesab.plus, negative=hesab.negative)
         for hesab2 in chosen_hesab:
             money += hesab.amount
-            print(hesab.amount)
             try:
                 hesab_2 = MainHesab.objects.get(week=week, plus=hesab.plus, negative=hesab.negative)
                 hesab_2.amount = money
             except:
                 hesab_2 = MainHesab.objects.create(week=week, plus=hesab.plus, negative=hesab.negative, amount=money)
-    # for hesab in hesabs:
         chosen_hesab_2 = Hesab.objects.filter(week=week, plus=hesab.negative, negative=hesab.plus)
         for hesab2 in chosen_hesab_2:
             money -= hesab.amount
-        print('last money :', hesab.amount)
         try:
             hesab_2 = MainHesab.objects.get(week=week, plus=hesab.plus, negative=hesab.negative)
             hesab_2.amount = money
@@ -227,7 +187,7 @@ def correct_hesab(request, pk):
         nm = neg_money.money
         while 0 > nm:
             try:
-                if not pm_z:                                 # if pm_z =0:
+                if not pm_z:
                     pos_money = all_pos_money[indent]
                     pm = pos_money.money
                 else:
@@ -255,7 +215,7 @@ def correct_hesab(request, pk):
                     pm = 0
                     pm_z = 0
                     indent += 1
-    chosen_money = Money.objects.filter(week_id=pk)
+    chosen_money = Money.objects.filter(week_id=pk).order_by('-money')
     chosen_hesab = Hesab.objects.filter(week_id=pk)
     context = {
         'all_money': chosen_money,
@@ -278,64 +238,20 @@ class DeleteWeek(generic.DeleteView):
     template_name = 'hesab/delete_week.html'
     success_url = reverse_lazy('week_list')
 
-# def hesab(request, pk):
-#     money_plus = Money.objects.filter(week_id=pk, money__gte=1).order_by('money')
-#     money_negative = Money.objects.filter(week_id=pk, money__lte=-1 ).order_by('money')
-#     for n in money_negative:
-#         n_money=n.money
-#         shou
-#         while n_money <0:
-
-# def give_to_get(request, pk):
 
 
 
 class DeleteMoney(generic.DeleteView):
     model = Money
     template_name = 'hesab/delete_week.html'
+
     def get_success_url(self):
         return f'/{self.object.week.id}/weekdetails/'
 
+class DeleteShopping(generic.DeleteView):
+    model = Shopping
+    template_name = "hesab/delete_shopping.html"
 
+    def get_success_url(self):
+        return reverse('week_details', args=[self.object.week.id])
 
-
-
-
-
-
-
-
-
-
-# class WeekDetails(generic.DetailView):
-#     model = Week
-#     template_name = 'hesab/week_details.html'
-#     context_object_name = 'week'
-#
-#
-# def refresh2(request, pk):
-#     week = Week.objects.get(id=pk)
-#     shopping = Shopping.objects.filter(week=week)
-#     moneys = Money.objects.filter(week=week)
-#     for shop in shopping:
-#         numbers = shop.consumer.all().count()
-#         for con in shop.consumer.all():
-#             print(con)
-#             my_money = 0
-#             my_money -= int(shop.amount/numbers)
-#             print('money : ' ,my_money , )
-#             if shop.buyer == con:
-#                 print(con)
-#                 print(shop.buyer == con)
-#                 my_money += int(shop.amount)
-#             me = Money.objects.filter(user=con, week=week).update(money=my_money)
-#             print('me money :',me,'000')
-#             # my_con =con
-#             print('-------------------------------------------')
-#     print('=====================================================')
-#             # me_2 = Money.objects.update_or_create(user=my_con
-#             #                                       ,week=week,money=10)
-#             # money_form = MoneyForm()
-#             # print(me_2)
-#             # me2 = me.objects.update(money=my_money)
-#     return render(request, 'hesab/week_details.html', {'week': week})
