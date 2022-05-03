@@ -12,6 +12,7 @@ class WeekList(generic.ListView):
     model = Week
     template_name = 'hesab/week_list.html'
     context_object_name = 'week_list'
+    ordering = ['-date_create']
 
 
 def refresh(request, pk):
