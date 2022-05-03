@@ -106,8 +106,16 @@ def shopping_create_view(request, pk):
                     money = Money.objects.create(week=week, user=con, money=0)
                     my_money = money.money
                     my_money -= int(shop.amount / numbers)
-                if con.id == shop.buyer.id:
-                    my_money += shop.amount
+                # print('-----')
+                # if con.id == shop.buyer.id:
+                #     print(my_money)
+                #     my_money += shop.amount
+                #     print(my_money)
+                # else:
+                bm = Money.objects.get(week=week,user=shop.buyer)
+                bm_money = bm.money
+                bm_money += shop.amount
+                Money.objects.filter(week=week, user=shop.buyer).update(money=bm_money)
                 Money.objects.filter(user=money.user, week=week).update(money=my_money)
             Week.objects.filter(id=pk).update(sum=week_sum)
             return HttpResponseRedirect(f'/{pk}/createshopping/')
