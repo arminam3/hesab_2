@@ -1,0 +1,72 @@
+{% extends '_base.html' %}
+
+{% block title %}
+    Week Details
+{% endblock title %}
+
+{% block extra %}
+    <p class="btn btn-light"><b>جمع کل : </b><b>{{ sum }} </b></p>
+{% endblock extra %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-3">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">نام</th>
+                        <th scope="col">اعتبار</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for mon in all_money %}
+                        <tr>
+                            <th scope="row">{{ mon.user }}</th>
+                            <td>
+                                {{ mon.money }}
+                            </td>
+                        <td>
+                            <a href="{% url 'delete_money' mon.id %}" class="btn btn-danger">Delete</a>
+                        </td>
+
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-3"></div>
+            <div class="col-3 ">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">نام</th>
+                    <th scope="col"></th>
+                    <th scope="col">بدهی</th>
+                    <th scope="col"></th>
+                    <th scope="col">گیرنده</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for hesab in all_hesab %}
+                    <tr>
+                        <th scope="row" style="background-color:#ff4033">{{ hesab.negative }}</th>
+                        <th scope="row">==></th>
+                        <td>
+                            {{ hesab.money }}
+                        </td>
+                        <th scope="row">==></th>
+                        <th scope="row" style="background-color:#52ff6a">{{ hesab.plus }}</th>
+
+
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+
+{% endblock content %}

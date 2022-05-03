@@ -3,9 +3,12 @@ from django.contrib.auth.models import User
 
 
 class Week(models.Model):
+    STATUS = (('yes', 'yes'), ('no', 'no'))
+
     name = models.CharField(max_length=100)
     date_create = models.DateField(auto_now_add=True)
     sum = models.IntegerField(default=0)
+    status = models.CharField(choices=STATUS, max_length=100, default='no')
 
     def __str__(self):
         return self.name
@@ -43,11 +46,11 @@ class Money(models.Model):
 class Hesab(models.Model):
     plus = models.ForeignKey(User, on_delete=models.CASCADE, related_name='userhesab_p')
     negative = models.ForeignKey(User, on_delete=models.CASCADE, related_name='userhesab_n')
-    amount = models.IntegerField()
+    money = models.IntegerField()
     week = models.ForeignKey(Week, on_delete=models.CASCADE, related_name='weekhesab', null=True)
 
     def __str__(self):
-        return f'{self.negative.username} ==> {self.plus.username}'
+        return f'{self.negative.username} ==> {self.plus.username} | {self.money}'
 
 
 class MainHesab(models.Model):

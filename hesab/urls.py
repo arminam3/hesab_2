@@ -10,5 +10,5 @@ urlpatterns=[
     path('<int:pk>/createshopping/', views.shopping_create_view, name='create_shopping'),
     path('<int:pk>/hesab/', views.hesab, name='hesab'),
     path('<int:pk>/deletemoney/', views.DeleteMoney.as_view(), name='delete_money'),
-    path('<int:pk>/lasthesabrefresh/', views.last_hesab_refresh, name='last_hesab_refresh'),
+    path('<int:pk>/lasthesabrefresh/', views.correct_hesab, name='last_hesab_refresh'),
 ]

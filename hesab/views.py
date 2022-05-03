@@ -251,37 +251,61 @@ def hesab(request, pk):
     last_hesab = LastHesab.objects.filter(week=week)
     return render(request, 'hesab/all_hesab.html', {'hesabs': last_hesab})
 
-def last_hesab_refresh(request, pk):
-    week = Week.objects.get(id=pk)
-    shopping = Shopping.objects.filter(week=week).order_by('name')
-    main_heasbs = MainHesab.objects.filter(week=week).order_mby('amount')      #important
-    LastHesab.objects.filter(week=week).delete()
-    for main_hesab in main_heasbs:
-        try:
+
+def correct_hesab(request, pk):
+    for h in Hesab.objects.all(): #حذف تمامی حساب ها
+        h.delete()
+    all_pos_money = Money.objects.filter(week_id=pk, money__gte=1).order_by('-money')
+    all_neg_money = Money.objects.filter(week_id=pk, money__lte=-1).order_by('money')
+    indent = 0
+    pm_z = 0
+    for neg_money in all_neg_money:
+        nm = neg_money.money
+        while 0 > nm:
             try:
-                last_hesab = LastHesab.objects.get(week=week, plus=main_hesab.plus, negative=main_hesab.negative)
-                last_hesab.amount += main_hesab.amoun
-                print('-------')
-            except:
-                pass
-            try:
-                last_hesab = LastHesab.objects.get(week=week, plus=main_hesab.negative, negative=main_hesab.plus)
-                last_hesab.amount -= main_hesab.amoun
-                print('++++++++')
+                if not pm_z:                                 # if pm_z =0:
+                    pos_money = all_pos_money[indent]
+                    pm = pos_money.money
+                else:
+                    pos_money = all_pos_money[indent]
+                    pm = pm_z
 
             except:
-                pass
-        except:
-            last_hesab = LastHesab.objects.create(week=week, plus=main_hesab.plus, negative=main_hesab.negative, amount=main_hesab.amount)
+                break
 
-    last_hesabs = LastHesab.objects.filter(week=pk)
-    return render(request, 'hesab/all_hesab.html', {'hesabs': last_hesabs})
+            while pm> 0 > nm:
+                if pm > -1 * nm:
+                    Hesab.objects.create(week_id=pk, plus=pos_money.user, negative=neg_money.user, money=-1*nm)
+                    pm += nm
+                    nm = 0
+                    pm_z = pm
+                elif pm < -1 * nm:
+                    Hesab.objects.create(week_id=pk, plus=pos_money.user, negative=neg_money.user, money=pm)
+                    nm += pm
+                    pm = 0
+                    pm_z = 0
+                    indent += 1
+                else:
+                    Hesab.objects.create(week_id=pk, plus=pos_money.user, negative=neg_money.user, money=pm)
+                    nm = 0
+                    pm = 0
+                    pm_z = 0
+                    indent += 1
+    chosen_money = Money.objects.filter(week_id=pk)
+    chosen_hesab = Hesab.objects.filter(week_id=pk)
+    context = {
+        'all_money': chosen_money,
+        'all_hesab': chosen_hesab,
+    }
+    return render(request, 'hesab/last_hesab.html',context)
+
 
 
 class CreateWeek(generic.CreateView):
     model = Week
     template_name = 'hesab/create_money.html'
     fields = ['name']
+
     def get_success_url(self):
         return reverse('week_details', args=[self.object.pk])
 
