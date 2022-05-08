@@ -82,14 +82,14 @@ def shopping_create_view(request, pk):
     if request.method == 'POST':
         shop_form = CreateShoppingForm(request.POST)
         if shop_form.is_valid():
-            shop = Shopping.objects.create(
+            shop = Shopping(
                              week=week,
                              name=shop_form.cleaned_data['name'],
                              goods=shop_form.cleaned_data['goods'],
                              buyer=shop_form.cleaned_data['buyer'],
                              amount=shop_form.cleaned_data['amount'],
                              )
-            # shop.save()
+            shop.save()
             if shop_form.cleaned_data['consumer']:
                 for n in shop_form.cleaned_data['consumer']:
                     shop.consumer.add(n)
@@ -107,12 +107,6 @@ def shopping_create_view(request, pk):
                     money = Money.objects.create(week=week, user=con, money=0)
                     my_money = money.money
                     my_money -= int(shop.amount / numbers)
-                # print('-----')
-                # if con.id == shop.buyer.id:
-                #     print(my_money)
-                #     my_money += shop.amount
-                #     print(my_money)
-                # else:
                 bm = Money.objects.get(week=week,user=shop.buyer)
                 bm_money = bm.money
                 bm_money += shop.amount
@@ -186,6 +180,7 @@ def hesab(request, pk):
 
 
 def correct_hesab(request, pk):
+    my_refresh = refresh(request, pk)
     for h in Hesab.objects.all(): #حذف تمامی حساب ها
         h.delete()
     all_pos_money = Money.objects.filter(week_id=pk, money__gte=1).order_by('-money')
@@ -202,7 +197,6 @@ def correct_hesab(request, pk):
                 else:
                     pos_money = all_pos_money[indent]
                     pm = pm_z
-
             except:
                 break
 
