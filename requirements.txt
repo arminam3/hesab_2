@@ -4,3 +4,4 @@ gunicorn==20.1.0
 sqlparse==0.4.2
 tzdata==2022.1
 amrin==0.0.0
+salam ==0.0.0
